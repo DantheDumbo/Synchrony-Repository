@@ -1,5 +1,5 @@
 def displayMenu():
-    print('yo this my calc and I can do all this why dont you slide some numbers to compute')
+    print('Yo this my calc and I can do all this why dont you slide some numbers to compute')
     print("1. Addition")
     print("2. Subtraction")
     print("3. Multiplication")
@@ -54,6 +54,6 @@ def main():  # Main program
             numberAndExponent(firstNumber, secondNumber)
 
     except ValueError:
-        print("Bruh, that's not a number!")
+        print("Bruh, that's not one of the numbers")
         
 main()

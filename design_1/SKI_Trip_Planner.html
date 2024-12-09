@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ski Trip Planner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: url('https://images.unsplash.com/photo-1586969102724-47d8d221d4d6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+            background-size: cover;
+            background-color: #000; /* Fallback */
+            color: #fff;
+        }
+        h1 {
+            text-align: center;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+        }
+        #results {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ski Trip Planner</h1>
+    <div id="formContainer">
+        <!-- Step 1: Budget -->
+        <div class="step active" id="step1">
+            <div class="form-group">
+                <label for="budget">What's your budget (in USD)?</label>
+                <input type="number" id="budget" placeholder="Enter your budget">
+            </div>
+            <button onclick="nextStep(2)">Next</button>
+        </div>
+
+        <!-- Step 2: Driving Distance -->
+        <div class="step" id="step2">
+            <div class="form-group">
+                <label for="distance">How far are you willing to drive from your current location or the nearest airport in that area (in miles)?</label>
+                <input type="number" id="distance" placeholder="Enter max driving distance">
+            </div>
+            <button onclick="previousStep(1)">Back</button>
+            <button onclick="nextStep(3)">Next</button>
+        </div>
+
+        <!-- Step 3: Preferences -->
+        <div class="step" id="step3">
+            <div class="form-group">
+                <label for="preferences">What type of ski resort do you prefer?</label>
+                <select id="preferences">
+                    <option value="beginner">Beginner-Friendly</option>
+                    <option value="advanced">Advanced Slopes</option>
+                    <option value="family">Family-Friendly</option>
+                </select>
+            </div>
+            <button onclick="previousStep(2)">Back</button>
+            <button onclick="nextStep(4)">Next</button>
+        </div>
+
+        <!-- Step 4: Importance Selection -->
+        <div class="step" id="step4">
+            <div class="form-group">
+                <label>Pick three features that are most important to you:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="importance" value="snow"> Snow Quality</label>
+                    <label><input type="checkbox" name="importance" value="resiliency"> Resiliency</label>
+                    <label><input type="checkbox" name="importance" value="size"> Size</label>
+                    <label><input type="checkbox" name="importance" value="terrainDiversity"> Terrain Diversity</label>
+                    <label><input type="checkbox" name="importance" value="challenge"> Challenge</label>
+                    <label><input type="checkbox" name="importance" value="lifts"> Lifts</label>
+                    <label><input type="checkbox" name="importance" value="crowdFlow"> Crowd Flow</label>
+                    <label><input type="checkbox" name="importance" value="facilities"> Facilities</label>
+                    <label><input type="checkbox" name="importance" value="navigation"> Navigation</label>
+                    <label><input type="checkbox" name="importance" value="mountainAesthetic"> Mountain Aesthetic</label>
+                </div>
+            </div>
+            <p id="error" style="color: red; display: none;">Please select exactly three options.</p>
+            <button onclick="previousStep(3)">Back</button>
+            <button onclick="validateStep4()">Next</button>
+        </div>
+
+        <!-- Step 5: Activity -->
+        <div class="step" id="step5">
+            <div class="form-group">
+                <label for="activity">What activity are you planning?</label>
+                <select id="activity">
+                    <option value="skiing">Skiing</option>
+                    <option value="snowboarding">Snowboarding</option>
+                </select>
+            </div>
+            <button onclick="previousStep(4)">Back</button>
+            <button onclick="showResults()">See Results</button>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results" style="display: none;">
+        <h2>Your Recommended Ski Resort:</h2>
+        <p>Killington Mountain Resort in Vermont</p>
+        <button onclick="restart()">Start Over</button>
+    </div>
+
+    <script>
+        function nextStep(step) {
+            const steps = document.querySelectorAll('.step');
+            steps.forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+        }
+
+        function previousStep(step) {
+            const steps = document.querySelectorAll('.step');
+            steps.forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+        }
+
+        function validateStep4() {
+            const checkedOptions = document.querySelectorAll('input[name="importance"]:checked');
+            const error = document.getElementById('error');
+
+            if (checkedOptions.length !== 3) {
+                error.style.display = 'block';
+            } else {
+                error.style.display = 'none';
+                nextStep(5);
+            }
+        }
+
+        function showResults() {
+            document.getElementById('formContainer').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function restart() {
+            document.getElementById('formContainer').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            nextStep(1);
+        }
+    </script>
+</body>
+</html>
